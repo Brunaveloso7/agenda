@@ -7,19 +7,22 @@ app = Flask(__name__)
 def home():
     return render_template('home.html', titulo='Home')
 
-@app.route('/agenda', methods=['GET','POST'])
+@app.route('/agenda', methods=['GET', 'POST'])
 def agenda():
     tarefa = None
 
     if request.method == 'POST':
-        titulo_tarefa = request.form['titulo_tarefa']
-        data_conclusao = request.form.get('data_conclusao')
+        titulo_tarefa = request.form.get['titulo_tarefa']
+        data_conclusao = request.form.get['data_conclusao']
         tarefa = Tarefa(titulo_tarefa, data_conclusao)
+        tarefa.salvar_tarefa()
+        
+    return render_template(
+        'agenda.html',
+        titulo='Agenda',
+        tarefa=tarefa
+    )
 
-    return render_template('agenda.html', titulo='Agenda',
-    tarefa=tarefa)
-
-    
 @app.route('/ola')
 def ola_mundo():
     return "Olá, Mundo!"
