@@ -1,7 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<h2 class="bemvindo">Seja bem-vindo 💙</h2>
+
+<div class="agenda">
     <form method="POST">
+        <div class="mb-3">
+    <label for="Adicinar" class="form-label">Titulo da Tarefa</label>
+    <input type="tarefa" class="form-control" name="titulo-tarefa" aria-describedby="ajudaNomeTarefa" required>
+    <div id="ajudaNomeTarefa" class="form-text">Use um nome da tarefa que seja descritivo.</div>
+        </div>
+
+  <div class="mb-3">
+       <label for="data-conclusao" class="form-label">Data de conclusão</label>
+       <input type="date" class="form-control" name = "data-conclusao" id="data-conclusao">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Adicionar</button>
+
         <input type="text"
                name="titulo_tarefa"
                id="titulo_tarefa"
@@ -14,8 +31,14 @@
 
         <button type="submit">Adicionar</button>
     </form>
-        <p>{{ tarefa.titulo_tarefa }} - {{ tarefa.data_conclusao }}</p>
+        <p class="tarefa">
+            {{ tarefa.titulo_tarefa }} - {{ tarefa.data_conclusao }}
+        </p>
+   
+</div>
+
 {% endblock %}
+
 
 
 <!-- Metódos HTTP:
