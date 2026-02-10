@@ -1,8 +1,13 @@
 from sqlite3 import Connection, connect, Cursor
 from typing import Any, Optional, Self, Type
 from types import TracebackType
+from dotenv import load_dotenv
 import traceback
- 
+import os
+
+load_dotenv() 
+DB_PATH = os.getenv('DATABASE', './data/tarefas.sqlite3')
+
 class Database:
     def __init__(self, db_name: str) -> None:
         self.connection: Connection = connect(db_name)
@@ -13,6 +18,13 @@ class Database:
          titulo_tarefa TEXT NOT NULL,
          data_conclusao TEXT);
         """)
+
+    """
+       Classe que gerencia conexões e operaçõesz com um banco de dados SQLite.
+       Utiliza o protocolo de gerenciamento de conetxto para garantir que a 
+       conexão seja 
+ 
+    """
  
     def executar(self, query: str, params: tuple = ()) -> Cursor:
         self.cursor.execute(query, params)
