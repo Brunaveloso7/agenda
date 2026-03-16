@@ -46,7 +46,7 @@
 
             <div>
                 <button onclick="mudarStatus('{{ tarefa.id_tarefa }}')"
-                        class="btn-status {% if tarefa.concluida == 1 %}cor-reabrir{% else %}cor-concluir{% endif %}">
+                    class="btn-status {% if tarefa.concluida == 1 %}cor-reabrir{% else %}cor-concluir{% endif %}">
                     {% if tarefa.concluida == 1 %}Reabrir{% else %}Concluir{% endif %}
                 </button>
 
