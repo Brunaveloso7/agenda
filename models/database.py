@@ -5,46 +5,67 @@ from dotenv import load_dotenv
 import traceback
 import os
 
-load_dotenv() 
+load_dotenv()
+
 DB_PATH = os.getenv('DATABASE', './data/tarefas.sqlite3')
 
-class Database:
-    def __init__(self, db_name: str) -> None:
-        self.connection: Connection = connect(db_name)
-        self.cursor: Cursor = self.connection.cursor()
-        self.executar("""
-        CREATE TABLE IF NOT EXISTS tarefas (
-         id INTEGER PRIMARY KEY AUTOINCREMENT,
-         titulo_tarefa TEXT NOT NULL,
-         data_conclusao TEXT);
+
+
+def init_db(db_name: str = DB_PATH) -> None:
+
+    data_dir = os.path.join(os.getcwd(), "data")
+
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir, exist_ok=True)
+         
+    with connect(db_name) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS tarefas (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                titulo_tarefa TEXT NOT NULL,
+                data_conclusao TEXT,
+                concluida INTEGER DEFAULT 0,
+                data_hora_conclusao TEXT
+            );
         """)
 
+
+class Database:
     """
-       Classe que gerencia conexões e operaçõesz com um banco de dados SQLite.
-       Utiliza o protocolo de gerenciamento de conetxto para garantir que a 
-       conexão seja 
- 
+    Classe que cuida da conexão com o banco SQLite
+    e executa comandos SQL.
     """
- 
+
+  
+    def __init__(self, db_name: str = DB_PATH) -> None:
+        self.connection: Connection = connect(db_name)
+        self.cursor: Cursor = self.connection.cursor()
+        
+
+    
     def executar(self, query: str, params: tuple = ()) -> Cursor:
         self.cursor.execute(query, params)
         self.connection.commit()
         return self.cursor
- 
+    
+
+    
     def buscar_tudo(self, query: str, params: tuple = ()) -> list[Any]:
         self.cursor.execute(query, params)
         return self.cursor.fetchall()
- 
+    
+
+    
+
     def close(self) -> None:
         self.connection.close()
- 
-    # Métodos para o gerenciamento de contexto
- 
-    # Método de entrada do contexto
+    
+
     def __enter__(self) -> Self:
         return self
- 
-    # Método de saída do contexto
+    
+
+    
     def __exit__(
         self,
         exc_type: Optional[Type[BaseException]],
@@ -52,26 +73,8 @@ class Database:
         tb: Optional[TracebackType],
     ) -> None:
         if exc_type is not None:
-            print("Exceção capiturar no contexto: ")
+            print("Exceção capturada no contexto:")
             print(f"Tipo: {exc_type.__name__}")
             print(f"Mensagem: {exc_value}")
-            print("Traceback completo:")
-            traceback.print_tb(tb)
- 
+
         self.close()
- 
- 
-# Área de Testes
-# try:
-#     db = Database('./data/tarefas.sqlite3')
-#     db.executar('''
-#     CREATE TABLE IF NOT EXISTS tarefas (
-#         id INTEGER PRIMARY KEY AUTOINCREMENT,
-#         titulo_tarefa TEXT NOT NULL,
-#         data_conclusao TEXT);
-#     ''')
-#     db.executar(" INSERT INTO tarefas (titulo_tarefa, data_conclusao) VALUES (?, ?);", ("Estudar Python", "2026-01-29"))
-# except Exception as e:
-#     print(f"Erro ao criar tabela: {e}")
-# finally:
-#     db.close()
